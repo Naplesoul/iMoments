@@ -1,30 +1,39 @@
 import 'package:flutter/material.dart';
 
+String userName = "青铜葵花";
+
+/*class IMoments extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: "iMomentsPage",
+      home: HomePage(),
+    );
+  }
+}
+*/
 class HomePage extends StatefulWidget {
   @override
   _HomePage createState() => _HomePage();
 }
-
 class _HomePage extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    int edgeDistance = 12;
     return Scaffold(
       body: Column(
         children: [
           Container(
-            height: 200,
+            height: 200, //上框高度
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.black54, width: 1),
+              border: Border.all(width: 1),
             ),
             child: Row(
               children: <Widget>[
                 Container(
                   width: 100,
+                  margin: const EdgeInsets.only(left: 12,),
                   decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.green,
-                    ),
+                    border: Border.all(color: Colors.green,),
                     shape: BoxShape.circle,
                     image: DecorationImage(
                       image: AssetImage("images/bigHead.png"),
@@ -37,38 +46,26 @@ class _HomePage extends State<HomePage> {
                     children: [
                       Container(
                         alignment: Alignment.topLeft,
-                        margin: const EdgeInsets.only(
-                          bottom: 12,
-                        ),
-                        child: Text(
-                          userName,
-                          style: TextStyle(
-                            fontSize: 20,
-                          ),
-                        ),
+                        margin: const EdgeInsets.only(bottom: 12,),
+                        child: Text(userName, style: TextStyle(fontSize: 20,),),
                       ),
                       Container(
-                          child: Row(
-                        children: [
-                          Container(
-                            child: Text("iMomentsID:DongD_0706"),
-                          ),
-                        ],
-                      ))
+                        child: Text("iMomentsID:DongD_0706"),
+                      )
                     ],
                   ),
                 )
               ],
             ),
           ),
-          GestureDetector(
+          GestureDetector( //我的动态
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (_) {
                 return MyMomentsPage();
               }));
             }, //点击后跳转
             child: Container(
-              height: 40,
+              height: 50,
               margin: const EdgeInsets.only(top: 10),
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.black54, width: 1),
@@ -92,14 +89,14 @@ class _HomePage extends State<HomePage> {
               ),
             ),
           ),
-          GestureDetector(
+          GestureDetector( //收藏
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (_) {
-                return MyMomentsPage();
+                return MyFavorite();
               }));
             },
             child: Container(
-              height: 40,
+              height: 50,
               margin: const EdgeInsets.only(top: 10),
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.black54, width: 1),
@@ -123,14 +120,14 @@ class _HomePage extends State<HomePage> {
               ),
             ),
           ),
-          GestureDetector(
+          GestureDetector( //设置
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (_) {
                 return Settings();
               }));
             },
             child: Container(
-              height: 40,
+              height: 50,
               margin: const EdgeInsets.only(top: 10),
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.black54, width: 1),
@@ -158,13 +155,12 @@ class _HomePage extends State<HomePage> {
       ),
     );
   }
-}
 
-class MyMomentsPage extends StatefulWidget {
+}
+class MyMomentsPage extends StatefulWidget{
   @override
   _MyMomentsPage createState() => _MyMomentsPage();
 }
-
 class _MyMomentsPage extends State<MyMomentsPage> {
   @override
   Widget build(BuildContext context) {
@@ -176,19 +172,34 @@ class _MyMomentsPage extends State<MyMomentsPage> {
         ],
       ),
       body: Column(
-        children: [],
+        children: [
+        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-          onPressed: null, label: Icon(Icons.add)),
+          onPressed: null,
+          label: Icon(Icons.add)),
     );
   }
 }
-
-class Settings extends StatefulWidget {
+class MyFavorite extends StatefulWidget{
+  @override
+  _MyFavorite createState() => _MyFavorite();
+}
+class _MyFavorite extends State<MyFavorite>{
+  @override
+  // ignore: missing_return
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("收藏"),
+      ),
+    );
+  }
+}
+class Settings extends StatefulWidget{
   @override
   _Settings createState() => _Settings();
 }
-
 class _Settings extends State<Settings> {
   @override
   Widget build(BuildContext context) {
@@ -202,23 +213,19 @@ class _Settings extends State<Settings> {
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (_) {
                 return EditName();
-              }));
-            },
+              }));},
             child: Container(
               height: 60,
               margin: const EdgeInsets.only(top: 10),
               decoration: BoxDecoration(
-                border: Border.all(
-                    color: Color.fromRGBO(200, 200, 200, 50), width: 1),
+                border: Border.all(color: Color.fromRGBO(200, 200, 200, 50), width: 1),
               ),
               child: Row(
                 children: <Widget>[
                   Expanded(
                     child: Container(
                       child: Text("昵称"),
-                      margin: const EdgeInsets.only(
-                        left: 20,
-                      ),
+                      margin: const EdgeInsets.only(left: 20,),
                     ),
                   ),
                   Container(
@@ -240,17 +247,14 @@ class _Settings extends State<Settings> {
               height: 60,
               margin: const EdgeInsets.only(top: 10),
               decoration: BoxDecoration(
-                border: Border.all(
-                    color: Color.fromRGBO(200, 200, 200, 50), width: 1),
+                border: Border.all(color: Color.fromRGBO(200, 200, 200, 50), width: 1),
               ),
               child: Row(
                 children: <Widget>[
                   Expanded(
                     child: Container(
                       child: Text("头像"),
-                      margin: const EdgeInsets.only(
-                        left: 20,
-                      ),
+                      margin: const EdgeInsets.only(left: 20,),
                     ),
                   ),
                   Expanded(
@@ -268,19 +272,19 @@ class _Settings extends State<Settings> {
     );
   }
 }
-
-class EditName extends StatefulWidget {
+class EditName extends StatefulWidget{
   @override
   _EditName createState() => _EditName();
 }
-
-class _EditName extends State<EditName> {
+class _EditName extends State<EditName>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("编辑昵称"),
-        actions: [Icon(Icons.save)],
+        actions: [
+          Icon(Icons.save)
+        ],
       ),
       body: TextField(
         decoration: InputDecoration(
@@ -288,9 +292,7 @@ class _EditName extends State<EditName> {
           labelText: "昵称",
         ),
         controller: new TextEditingController(),
-        onChanged: (_) {
-          userName = "你的东东";
-        },
+        onChanged: (_) { userName = "你的东东";},
       ),
     );
   }
