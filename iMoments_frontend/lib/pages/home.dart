@@ -23,7 +23,7 @@ class _HomePage extends State<HomePage> {
       body: Column(
         children: [
           Container(
-            height: 200, //上框高度
+            height: 150, //上框高度
             decoration: BoxDecoration(
               border: Border.all(width: 1),
             ),
@@ -31,12 +31,12 @@ class _HomePage extends State<HomePage> {
               children: <Widget>[
                 Container(
                   width: 100,
-                  margin: const EdgeInsets.only(left: 12,),
+                  margin: const EdgeInsets.only(left: 20, top: 25),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.green,),
+                    border: Border.all(color: Colors.black, ),
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                      image: AssetImage("images/bigHead.png"),
+                      image: AssetImage("assets/loadingPic.png"),
                     ),
                   ),
                 ),
@@ -50,7 +50,7 @@ class _HomePage extends State<HomePage> {
                         child: Text(userName, style: TextStyle(fontSize: 20,),),
                       ),
                       Container(
-                        child: Text("iMomentsID:DongD_0706"),
+                        child: Text("      ID:DongD_0706"),
                       )
                     ],
                   ),
@@ -175,9 +175,6 @@ class _MyMomentsPage extends State<MyMomentsPage> {
         children: [
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-          onPressed: null,
-          label: Icon(Icons.add)),
     );
   }
 }
