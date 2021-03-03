@@ -10,7 +10,6 @@ class HomePage extends StatefulWidget {
   @override
   _HomePage createState() => _HomePage();
 }
-
 class _HomePage extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
@@ -30,9 +29,7 @@ class _HomePage extends State<HomePage> {
                     width: 100,
                     margin: const EdgeInsets.only(left: 20, top: 25),
                     decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.black,
-                      ),
+                      border: Border.all(color: Colors.black, ),
                       shape: BoxShape.circle,
                       image: DecorationImage(
                         image: AssetImage(Global.image.path),
@@ -47,15 +44,8 @@ class _HomePage extends State<HomePage> {
                     children: [
                       Container(
                         alignment: Alignment.topLeft,
-                        margin: const EdgeInsets.only(
-                          bottom: 12,
-                        ),
-                        child: Text(
-                          Global.userName,
-                          style: TextStyle(
-                            fontSize: 20,
-                          ),
-                        ),
+                        margin: const EdgeInsets.only(bottom: 12,),
+                        child: Text(Global.userName, style: TextStyle(fontSize: 20,),),
                       ),
                       Container(
                         child: Text("      ID: DongD_0706"),
@@ -181,7 +171,6 @@ class _HomePage extends State<HomePage> {
       //imgPath = image;
     });
   }
-
   /*相册*/
   _openGallery() async {
     var image = await ImagePicker.pickImage(source: ImageSource.gallery);
@@ -189,7 +178,6 @@ class _HomePage extends State<HomePage> {
       //imgPath = image;
     });
   }
-
   /*底部菜单栏*/
   Future<String> _showModalBottomSheet() {
     return showModalBottomSheet<String>(
@@ -199,24 +187,19 @@ class _HomePage extends State<HomePage> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             new ListTile(
-              onTap: () {
-                _openGallery();
-              },
+              onTap: () { _openGallery(); },
               leading: new Icon(Icons.photo_library),
               title: new Text("从相册中选择图片"),
             ),
             new ListTile(
-              onTap: () {
-                _takePhoto();
-              },
+              onTap: () { _takePhoto(); },
               leading: new Icon(Icons.photo_camera),
               title: new Text("拍照"),
             ),
             new ListTile(
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) {
-                  return FullScreen();
-                }));
+              onTap: () { Navigator.push(context, MaterialPageRoute(builder: (_) {
+                return FullScreen();
+              }));
               },
               leading: new Icon(Icons.panorama_fish_eye),
               title: new Text("查看大图"),
@@ -227,13 +210,12 @@ class _HomePage extends State<HomePage> {
               color: Colors.grey,
             ),
             new ListTile(
-                onTap: () {
-                  Navigator.of(context).pop();
-                }, //返回上一页
+                onTap: () { Navigator.of(context).pop(); }, //返回上一页
                 title: Container(
                   child: new Text("取消"),
                   alignment: Alignment.center,
-                )),
+                )
+            ),
           ],
         );
       },
