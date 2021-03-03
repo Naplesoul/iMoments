@@ -1,4 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'signUp.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -8,64 +13,167 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String username;
+  String password;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: ListView(
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
-          children: <Widget>[
-            SizedBox(height: 80.0),
-            Column(
-              children: [
-                Container(
-                  child: Image.asset('assets/projectLogo.jpg'),
-                  height: 150,
-                  width: 150,
+      body: WillPopScope(
+        onWillPop: () {
+          return Future.value(false);
+        },
+        child: SafeArea(
+          child: ListView(
+            padding: EdgeInsets.symmetric(horizontal: 24.0),
+            children: <Widget>[
+              SizedBox(height: 70.0),
+              Column(
+                children: [
+                  Container(
+                    child: Image.asset('assets/projectLogo.jpg'),
+                    height: 150,
+                    width: 150,
+                  ),
+                  SizedBox(height: 16.0),
+                  Text('iMoments'),
+                ],
+              ),
+              SizedBox(height: 100.0),
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp("[a-z,A-Z,0-9,_,-]")),
+                      ],
+                      controller: _usernameController,
+                      decoration: InputDecoration(
+                        labelText: '用户名',
+                      ),
+                      validator: (value) {
+                        if(value.isEmpty)
+                          return '用户名不能为空';
+                        if(value.length > 12 || value.length < 3)
+                          return '用户名长度为3~12位';
+
+                        username = value;
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 12.0),
+                    TextFormField(
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp("[a-z, A-Z, 0-9, _, -, ?, !, :, ', ;, ., @, #, %, ^, &, *, (, ), +, =, {, }, |]")),
+                      ],
+                      controller: _passwordController,
+                      decoration: InputDecoration(
+                        labelText: '密码',
+                      ),
+                      obscureText: true,
+                      validator: (value) {
+                        if(value.length < 5) {
+                          return '密码长度必须大于5';
+                        }
+                        password = value;
+                        return null;
+                      },
+                    ),
+                  ],
                 ),
-                SizedBox(height: 16.0),
-                Text('iMoments'),
-              ],
-            ),
-            SizedBox(height: 120.0),
-            TextField(
-              controller: _usernameController,
-              decoration: InputDecoration(
-                filled: true,
-                labelText: 'Username',
               ),
-            ),
-            SizedBox(height: 12.0),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(
-                filled: true,
-                labelText: 'Password',
-              ),
-              obscureText: true,
-            ),
-            ButtonBar(
-              children: <Widget>[
-                FlatButton(
+              ButtonBar(
+                children: <Widget>[
+                  FlatButton(
                     onPressed: () {
                       _usernameController.clear();
                       _passwordController.clear();
                     },
-                    child: Text('CANCEL')
-                ),
-                RaisedButton(
-                    child: Text('NEXT'),
-                    onPressed: (){
-                      Navigator.pop(context);
+                    child: Text('取消'),
+                  ),
+                  RaisedButton(
+                    color: Colors.blue,
+                    elevation: 5.0 ,
+                    child: Text('登录'),
+                    onPressed: () async {
+                      if(_formKey.currentState.validate()) {
+                        var url = 'https://www.imoments.com.cn:8080/login';
+                        var res = await http.post(url,
+                            body: '{"username":"$username","password":"$password"}');
+
+                        var json = jsonDecode(res.body);
+                        print(json);
+                        print(res.statusCode);
+
+                        if (res.statusCode == 200)
+                          Navigator.pop(context);
+                        else {
+                          _usernameController.clear();
+                          _passwordController.clear();
+
+                          showDialog (
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  content: Text('用户名或密码错误'),
+                                );
+                              }
+                          );
+                        }
+                      }
                     },
-                ),
-              ],
-            ),
-          ],
+                  ),
+
+                  FlatButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text('调试用')
+                  ),
+
+                ],
+              ),
+              SizedBox(height: 80,),
+              ButtonBar(
+                alignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  FlatButton(
+                    child: Text('注册'),
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (BuildContext context) => SignUpPage(),
+                      )
+                      );
+                    },
+                  ),
+                  FlatButton(
+                    onPressed: () {
+                      //todo: 微信登陆功能
+                    },
+                    child: Icon(
+                      Icons.add_circle,
+                      size: 30,
+                    ),
+                  ),
+                ],
+              ),
+              // RaisedButton(
+              //   child: Text('测试数据接口'),
+              //   onPressed: () async {
+              //     var url = 'http://1.15.86.128:8080/login';
+              //     var res = await http.post(url, body: '{"username":"123","password":"123456"}');
+              //
+              //     var json = jsonDecode(res.body);
+              //     print(json);
+              //     print(res.statusCode);
+              //   },
+              // ),
+            ],
+          ),
         ),
       ),
     );
-    throw UnimplementedError();
   }
 }

@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
 import 'pages/login.dart';
-import 'pages/gallery.dart';
 import 'bottom_navigation.dart';
+
+final ThemeData _appTheme = _buildAppTheme();
+
+ThemeData _buildAppTheme() {
+  final ThemeData base = ThemeData.light();
+  return base.copyWith(
+    inputDecorationTheme: InputDecorationTheme(
+      border: OutlineInputBorder(),
+    ),
+  );
+}
 
 class ImApp extends StatefulWidget {
   @override
@@ -16,6 +26,7 @@ class _ImAppState extends State<ImApp> {
       home: BottomNavigationWidget(),
       initialRoute: '/login',
       onGenerateRoute: _getRoute,
+      theme: _appTheme,
     );
   }
 }

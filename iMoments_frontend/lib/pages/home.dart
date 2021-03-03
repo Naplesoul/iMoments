@@ -3,7 +3,7 @@ import 'Settings.dart';
 import 'FullScreen.dart';
 import 'MyFavorite.dart';
 import 'MyMomentsPage.dart';
-import 'userInfo.dart';
+import '../userInfo.dart';
 import 'package:image_picker/image_picker.dart';
 
 class HomePage extends StatefulWidget {

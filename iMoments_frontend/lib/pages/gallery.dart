@@ -1,26 +1,30 @@
 import 'package:flutter/material.dart';
+import 'galleryShow.dart';
+import 'dart:math';
 
-class GalleryPage extends StatelessWidget {
-  List<Card> _buildGridCards(int count) {
-    List<Card> cards = List.generate(
-        count,
-        (int index) => Card(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                child: Image.asset('assets/projectLogo.jpg'),
-              ),
-            ],
-          ),
-        )
-    );
-    
-    return cards;
+class GalleryPage extends StatefulWidget {
+  @override
+  GalleryPageState createState() => new GalleryPageState();
+}
+
+class GalleryPageState extends State<GalleryPage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  int _imageCounter = -1;
+  int number = 0;
+  var ran = new Random();
+  List<Image> _images = [];
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -39,7 +43,7 @@ class GalleryPage extends StatelessWidget {
               semanticLabel: 'search',
             ),
             onPressed: () {
-
+              showSearch(context: context, delegate: SearchBar());
             },
           ),
           IconButton(
@@ -50,20 +54,89 @@ class GalleryPage extends StatelessWidget {
                 semanticLabel: 'filter',
               ),
             onPressed: () {
-
+                //todo: 过滤器
             },
           ),
         ],
       ),
-      body: Center(
-        child: GridView.count(
+      body: GridView.builder(
+          padding: EdgeInsets.all(4.0),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-          padding: EdgeInsets.all(10),
-          childAspectRatio: 8 / 9 ,
-          children: _buildGridCards(10),
-        ),
+            crossAxisSpacing: 4.0,
+            mainAxisSpacing: 4.0,
+          ),
+          itemBuilder: (context, index) {
+            if(index ~/ 50 != _imageCounter) {
+              number = ran.nextInt(1500);
+              List<Image> _moreImages = List<Image>.generate(
+                50, (i) => Image.network(
+                'https://www.imoments.com.cn/resource/img/2/${number + 10 * i}.jpg',
+                fit: BoxFit.cover,
+              ),
+              );
+              _images.addAll(_moreImages);
+              _imageCounter++;
+            }
+
+            return GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) {
+                    print('number: $number');print('index : $index');
+                    return GalleryShowPage(index: number + 10 * (index % 50) ,);
+                  },
+                ));
+              },
+              child: _images[index],
+            );
+          }
       ),
       resizeToAvoidBottomInset: false,
+    );
+  }
+}
+
+class SearchBar extends SearchDelegate<String> {
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+          icon: Icon(Icons.clear),
+          onPressed: () {
+            query = '';
+          },
+      )
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+        icon: AnimatedIcon(
+          icon: AnimatedIcons.menu_arrow,
+          progress: transitionAnimation,
+        ),
+        onPressed: () {
+          close(context, null);
+        },
+        );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    return Container(
+      //todo: add search results
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    return Container(
+      //todo: search suggestions
+      child: Center(
+        child: Text('suggestions'),
+      )
     );
   }
 }

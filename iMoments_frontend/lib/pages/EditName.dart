@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:imoments_2_28/userInfo.dart';
+import '../userInfo.dart';
 
 class EditName extends StatefulWidget{
   @override

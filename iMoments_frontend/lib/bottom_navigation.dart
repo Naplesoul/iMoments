@@ -15,18 +15,16 @@ class _BottomNavigationWidgetState extends State<BottomNavigationWidget> {
     PostPage(),
     HomePage(),
   ];
-  var _pageController = new PageController(initialPage: 0);
+  final _pageController = PageController();
   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: new PageView.builder(
+      body: new PageView(
+        physics: NeverScrollableScrollPhysics(),
         onPageChanged: _pageChange,
         controller: _pageController,
-        itemCount: _pages.length,
-        itemBuilder: (BuildContext context, int index) {
-          return _pages.elementAt(_currentIndex);
-        },
+        children: _pages,
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -56,7 +54,7 @@ class _BottomNavigationWidgetState extends State<BottomNavigationWidget> {
   }
 
   void _onItemTapped(int index) {
-    _pageController.animateToPage(index,duration: const Duration(milliseconds: 300), curve: Curves.ease);
+    _pageController.jumpToPage(index);
   }
 
   void _pageChange(int index) {
