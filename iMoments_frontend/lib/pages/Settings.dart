@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'EditName.dart';
+import 'EditPassword.dart';
+import 'userInfo.dart';
 
 class Settings extends StatefulWidget{
   @override
@@ -10,6 +12,12 @@ class _Settings extends State<Settings> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: AppBar(
+        leading: new IconButton(
+          icon: new Icon(Icons.arrow_back_ios),
+          onPressed: () => {
+            Navigator.of(context).pop('刷新')
+          },
+        ),
         title: Text("设置"),
       ),
       body: Column(
@@ -17,9 +25,11 @@ class _Settings extends State<Settings> {
           /*编辑昵称*/
           InkWell(
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (_) {
-                return EditName();
-              }));},
+              Navigator.push(context, MaterialPageRoute(builder: (context) => EditName()));
+              setState(() {
+                userName = userName;
+              });
+              },
             child: Container(
               height: 60,
               margin: const EdgeInsets.only(top: 10),
@@ -32,7 +42,41 @@ class _Settings extends State<Settings> {
                     ),
                   ),
                   Container(
-                    child: Text("青铜葵花"),
+                    child: Text(userName),
+                  ),
+                  Expanded(
+                    child: Container(
+                      child: Icon(Icons.keyboard_arrow_right),
+                      alignment: Alignment.centerRight,
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+          Divider(
+            height: 1,
+            thickness: 1,
+          ),
+          /*修改密码*/
+          InkWell(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) {
+                return EditPassword();
+              }));},
+            child: Container(
+              height: 60,
+              margin: const EdgeInsets.only(top: 10),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      child: Text("密码"),
+                      margin: const EdgeInsets.only(left: 20,),
+                    ),
+                  ),
+                  Container(
+                    child: Text(Global.password),
                   ),
                   Expanded(
                     child: Container(

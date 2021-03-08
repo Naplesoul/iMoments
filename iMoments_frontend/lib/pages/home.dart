@@ -3,8 +3,10 @@ import 'Settings.dart';
 import 'FullScreen.dart';
 import 'MyFavorite.dart';
 import 'MyMomentsPage.dart';
-import '../userInfo.dart';
+import 'userInfo.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'CropImage.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -26,7 +28,8 @@ class _HomePage extends State<HomePage> {
               children: <Widget>[
                 GestureDetector(
                   onTap: _showModalBottomSheet,
-                  child: Container(
+                  child:
+                  Container(
                     width: 100,
                     margin: const EdgeInsets.only(left: 20, top: 25),
                     decoration: BoxDecoration(
@@ -35,8 +38,8 @@ class _HomePage extends State<HomePage> {
                       ),
                       shape: BoxShape.circle,
                       image: DecorationImage(
-                        image: AssetImage(Global.image.path),
-                        fit: BoxFit.contain,
+                        image: imgPath == null ? AssetImage("images/bigHead.png") : FileImage(File(imgPath)),
+                        fit: BoxFit.fill,
                       ),
                     ),
                   ),
@@ -174,20 +177,34 @@ class _HomePage extends State<HomePage> {
   }
 
   /*拍照*/
-  _takePhoto() async {
+  Future _takePhoto() async {
     var image = await ImagePicker.pickImage(source: ImageSource.camera);
 
     setState(() {
-      //imgPath = image;
+      imgPath = image.path;
     });
   }
 
   /*相册*/
-  _openGallery() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+  Future _openGallery() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery); //.then((image) => cropImage(image));
     setState(() {
-      //imgPath = image;
+      imgPath = image.path;
     });
+  }
+
+  /*尝试让用户裁剪图片*/
+  void cropImage(File originalImage) async {
+    String result = await Navigator.push(context,
+        MaterialPageRoute(builder: (context) => CropImageRoute(originalImage)));
+    if (result.isEmpty) {
+      print('上传失败');
+    } else {
+      //result是图片上传后拿到的url
+      setState(() {
+        imgPath = originalImage.path;//后续数据处理，这里是更新头像信息
+      });
+    }
   }
 
   /*底部菜单栏*/
