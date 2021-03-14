@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'signUp.dart';
+import 'userInfo.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -49,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp("[a-z,A-Z,0-9,_,-]")),
                       ],
-                      controller: _usernameController,
+                      controller: _usernameController..text = storage_userName,
                       decoration: InputDecoration(
                         labelText: '用户名',
                       ),
@@ -68,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp("[a-z, A-Z, 0-9, _, -, ?, !, :, ', ;, ., @, #, %, ^, &, *, (, ), +, =, {, }, |]")),
                       ],
-                      controller: _passwordController,
+                      controller: _passwordController..text = storage_password,
                       decoration: InputDecoration(
                         labelText: '密码',
                       ),

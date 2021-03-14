@@ -17,7 +17,6 @@ class _EditName extends State<EditName>{
   var _controller = new TextEditingController();
   var _client = new http.Client();
 
-  //var userName = "青铜葵花HD";
   @override
   Widget build(BuildContext context) {
 
@@ -51,10 +50,10 @@ class _EditName extends State<EditName>{
   /*更改用户昵称*/
   changeUserName() {
     setState(() {
-      userName = _controller.text.toString();
+      storage_userName = _controller.text.toString();
     });
     // /*先从本地获取数据*/
-    // get();
+     get();
     //
     // SharedPreferences prefs = await SharedPreferences.getInstance();
     //

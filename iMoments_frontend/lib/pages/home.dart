@@ -39,7 +39,7 @@ class _HomePage extends State<HomePage> {
                       shape: BoxShape.circle,
                       image: DecorationImage(
                         image: imgPath == null ? AssetImage("images/bigHead.png") : FileImage(File(imgPath)),
-                        fit: BoxFit.fill,
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
@@ -54,7 +54,7 @@ class _HomePage extends State<HomePage> {
                           bottom: 12,
                         ),
                         child: Text(
-                          Global.userName,
+                          storage_userName,
                           style: TextStyle(
                             fontSize: 20,
                           ),

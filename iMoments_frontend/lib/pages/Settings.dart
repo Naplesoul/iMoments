@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'EditName.dart';
 import 'EditPassword.dart';
 import 'userInfo.dart';
+import 'login.dart';
+import 'package:imoments/bottom_navigation.dart';
 
 class Settings extends StatefulWidget{
   @override
@@ -27,7 +29,7 @@ class _Settings extends State<Settings> {
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => EditName()));
               setState(() {
-                userName = userName;
+                storage_userName = storage_userName;
               });
               },
             child: Container(
@@ -42,7 +44,7 @@ class _Settings extends State<Settings> {
                     ),
                   ),
                   Container(
-                    child: Text(userName),
+                    child: Text(storage_userName),
                   ),
                   Expanded(
                     child: Container(
@@ -76,7 +78,7 @@ class _Settings extends State<Settings> {
                     ),
                   ),
                   Container(
-                    child: Text(Global.password),
+                    child: Text(storage_password),
                   ),
                   Expanded(
                     child: Container(
@@ -92,31 +94,41 @@ class _Settings extends State<Settings> {
             height: 1,
             thickness: 1,
           ),
-          /*编辑头像*/
+          /*退出*/
           InkWell(
-            onTap: null,
+            onTap: () {
+              /*一直pop到loginPage*/
+              Navigator.pushAndRemoveUntil(context,
+                  new MaterialPageRoute(builder: (BuildContext c) {
+                    return new BottomNavigationWidget();
+                  }), (r) => r == null);
+              Navigator.push(context, MaterialPageRoute(builder: (_) {
+                return BottomNavigationWidget();
+              }));
+              Navigator.push(context, MaterialPageRoute(builder: (_) {
+                return LoginPage();
+              }));
+              },
             child: Container(
               height: 60,
               margin: const EdgeInsets.only(top: 10),
               // decoration: BoxDecoration(
               //   border: Border.all(color: Color.fromRGBO(200, 200, 200, 50), width: 1),
               // ),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Container(
-                      child: Text("头像"),
-                      margin: const EdgeInsets.only(left: 20,),
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      child: Icon(Icons.keyboard_arrow_right),
-                      alignment: Alignment.centerRight,
-                    ),
-                  )
-                ],
-              ),
+              child:
+                Center(
+                    child: Text("退出"),
+                ),
+              // Row(
+              //   children: <Widget>[
+              //     Expanded(
+              //       child: Container(
+              //         child: Text("头像"),
+              //         margin: const EdgeInsets.only(left: 20,),
+              //       ),
+              //     ),
+              //   ],
+              // ),
             ),
           ),
           Divider(
