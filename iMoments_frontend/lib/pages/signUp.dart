@@ -41,11 +41,11 @@ class SignUpPageState extends State<SignUpPage> {
               children: [
                 SizedBox(height: 16.0),
                 Text(
-                  '注册',
+                  'iMoments',
                   style: TextStyle(
-                    fontSize: 30,
+                    fontSize: 40,
                   ),
-                ),
+                )
               ],
             ),
             SizedBox(height: 100.0),
@@ -93,49 +93,56 @@ class SignUpPageState extends State<SignUpPage> {
                 ],
               ),
             ),
-            ButtonBar(
-              children: <Widget>[
-                FlatButton(
-                  onPressed: () {
+            SizedBox(height: 10,),
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.blue),
+                elevation: MaterialStateProperty.all(5.0),
+              ),
+              child: Text(
+                '注册',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                ),
+              ),
+              onPressed: () async {
+                if(_signUpFormKey.currentState.validate()) {
+                  print(1);
+                  var url = 'https://www.imoments.com.cn:8080/register';
+                  var res = await http.post(url,
+                      body: '{"username":"$_username","password":"$_firstPassword"}');
+
+                  var json = jsonDecode(res.body);
+                  print(json);
+                  print(res.statusCode);
+
+                  if (res.statusCode == 200) {
+                    showDialog (
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            content: Text('注册成功'),
+                          );
+                        }
+                    );
+                    Navigator.pop(context);
+                  }
+                  else {
                     _usernameController.clear();
                     _passwordController.clear();
-                  },
-                  child: Text('取消'),
-                ),
-                RaisedButton(
-                  color: Colors.blue,
-                  elevation: 5.0 ,
-                  child: Text('注册'),
-                  onPressed: () async {
-                    if(_signUpFormKey.currentState.validate()) {
-                      print(1);
-                      var url = 'https://www.imoments.com.cn:8080/register';
-                      var res = await http.post(url,
-                          body: '{"username":"$_username","password":"$_firstPassword"}');
 
-                      var json = jsonDecode(res.body);
-                      print(json);
-                      print(res.statusCode);
-
-                      if (res.statusCode == 200)
-                        Navigator.pop(context);
-                      else {
-                        _usernameController.clear();
-                        _passwordController.clear();
-
-                        showDialog (
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              content: Text('用户名已存在'),
-                            );
-                          }
-                        );
-                      }
-                    }
-                  },
-                ),
-              ],
+                    showDialog (
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            content: Text('用户名已存在'),
+                          );
+                        }
+                    );
+                  }
+                }
+              },
             ),
           ],
         ),

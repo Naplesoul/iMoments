@@ -82,6 +82,27 @@ class _GalleryShowPageState extends State<GalleryShowPage> {
                   Navigator.of(context).pop(this);
                 }
               },
+              onLongPress: () {
+                showModalBottomSheet(
+                    context: context,
+                    builder: (builder){
+                      return Container(
+                        color: Colors.transparent,
+                        height: 60,
+                        child: Column(
+                          children: <Widget>[
+                            TextButton(
+                                onPressed: () {
+                                  //todo: 保存图片
+                                },
+                                child: Text('保存图片')
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                );
+              },
               onTap: () {
                 Navigator.of(context).pop(this);
               },

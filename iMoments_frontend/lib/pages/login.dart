@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:imoments/pages/userInfo.dart';
 import 'signUp.dart';
-import 'userInfo.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -38,17 +38,17 @@ class _LoginPageState extends State<LoginPage> {
                     width: 150,
                   ),
                   SizedBox(height: 16.0),
-                  Text('iMoments'),
+                  Text('iMoments', style: TextStyle(fontSize: 20),),
                 ],
               ),
-              SizedBox(height: 100.0),
+              SizedBox(height: 60.0),
               Form(
                 key: _formKey,
                 child: Column(
                   children: [
                     TextFormField(
                       inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp("[a-z,A-Z,0-9,_,-]")),
+                        FilteringTextInputFormatter.deny(RegExp("[ \\ ]")),
                       ],
                       controller: _usernameController..text = storage_userName,
                       decoration: InputDecoration(
@@ -67,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(height: 12.0),
                     TextFormField(
                       inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp("[a-z, A-Z, 0-9, _, -, ?, !, :, ', ;, ., @, #, %, ^, &, *, (, ), +, =, {, }, |]")),
+                        FilteringTextInputFormatter.deny(RegExp("[ \\ ]")),
                       ],
                       controller: _passwordController..text = storage_password,
                       decoration: InputDecoration(
@@ -85,62 +85,59 @@ class _LoginPageState extends State<LoginPage> {
                   ],
                 ),
               ),
-              ButtonBar(
-                children: <Widget>[
-                  FlatButton(
-                    onPressed: () {
+              SizedBox(height: 20,),
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.blue),
+                  elevation: MaterialStateProperty.all(5.0),
+                ),
+                child: Text(
+                  '登录',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                  ),
+                ),
+                onPressed: () async {
+                  if(_formKey.currentState.validate()) {
+                    var url = 'https://www.imoments.com.cn:8080/login';
+                    var res = await http.post(url,
+                        body: '{"username":"$username","password":"$password"}');
+
+                    var json = jsonDecode(res.body);
+                    print(json);
+                    print(res.statusCode);
+
+                    if (res.statusCode == 200)
+                      Navigator.pop(context);
+                    else {
                       _usernameController.clear();
                       _passwordController.clear();
-                    },
-                    child: Text('取消'),
-                  ),
-                  RaisedButton(
-                    color: Colors.blue,
-                    elevation: 5.0 ,
-                    child: Text('登录'),
-                    onPressed: () async {
-                      if(_formKey.currentState.validate()) {
-                        var url = 'https://www.imoments.com.cn:8080/login';
-                        var res = await http.post(url,
-                            body: '{"username":"$username","password":"$password"}');
 
-                        var json = jsonDecode(res.body);
-                        print(json);
-                        print(res.statusCode);
+                      showDialog (
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              content: Text('用户名或密码错误'),
+                            );
+                          }
+                      );
+                    }
+                  }
+                },
+              ),
 
-                        if (res.statusCode == 200)
-                          Navigator.pop(context);
-                        else {
-                          _usernameController.clear();
-                          _passwordController.clear();
-
-                          showDialog (
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  content: Text('用户名或密码错误'),
-                                );
-                              }
-                          );
-                        }
-                      }
-                    },
-                  ),
-
-                  FlatButton(
+                  TextButton(
                       onPressed: () {
                         Navigator.pop(context);
                       },
                       child: Text('调试用')
                   ),
-
-                ],
-              ),
-              SizedBox(height: 80,),
+              SizedBox(height: 60,),
               ButtonBar(
                 alignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  FlatButton(
+                  TextButton(
                     child: Text('注册'),
                     onPressed: () {
                       Navigator.push(context, MaterialPageRoute(
@@ -149,7 +146,7 @@ class _LoginPageState extends State<LoginPage> {
                       );
                     },
                   ),
-                  FlatButton(
+                  TextButton(
                     onPressed: () {
                       //todo: 微信登陆功能
                     },

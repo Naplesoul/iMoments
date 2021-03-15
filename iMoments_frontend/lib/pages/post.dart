@@ -4,10 +4,12 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:imoments/pages/result.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import '../colors.dart';
 
 class PostPage extends StatefulWidget {
   @override
@@ -20,6 +22,10 @@ class _PostPageState extends State<PostPage>
   bool get wantKeepAlive => true;
 
   List _filePath = [];
+  bool _ifFilled = false;
+  String words;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   final picker = ImagePicker();
 
   Future getImage() async {
@@ -40,6 +46,62 @@ class _PostPageState extends State<PostPage>
     });
   }
 
+  Future printResult() async {
+    ProgressDialog.showProgress(context, child: SpinKitRing(
+      color: Colors.blue,
+      size: 80.0,
+    ),
+    );
+    String responseData;
+    List<String> responses = [];
+    if(_filePath.isNotEmpty) {
+      for (var path in _filePath) {
+        responseData = await _upLoadImage(path);
+        responses.add(responseData);
+      }
+    }
+    if(_ifFilled) {
+      responseData =  await _upLoadWords(words);
+      responses.add(responseData);
+    }
+    ProgressDialog.dismiss(context);
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) {
+          return ResultPage(response: responses,);
+        })
+    );
+  }
+
+  _upLoadImage(var imagePath) async {
+    FormData formData = FormData.fromMap({
+      "file": await MultipartFile.fromFile(imagePath),
+    });
+
+    Dio dio = Dio();
+    var response = await dio.post(
+      'https://www.imoments.com.cn:8080/graphic',
+      data: formData,
+    );
+    if (response.statusCode == 200) {
+      return response.toString();
+    }
+  }
+
+  _upLoadWords(String words) async {
+    FormData formData = FormData.fromMap({
+      "text": words,
+    });
+
+    Dio dio = Dio();
+    var response = await dio.post(
+      "https://www.imoments.com.cn:8080/word",
+      data: formData,
+    );
+    if (response.statusCode == 200) {
+      return response.toString();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -48,7 +110,7 @@ class _PostPageState extends State<PostPage>
       appBar: AppBar(
         backgroundColor: Colors.white,
         leading: Icon(
-          Icons.public,
+          Icons.picture_in_picture,
           color: Colors.black,
         ),
         title: Text(
@@ -60,11 +122,78 @@ class _PostPageState extends State<PostPage>
             )
           ),
         ),
+        actions: [
+          Container(
+            margin: EdgeInsets.all(10),
+            width: 70,
+            child: ElevatedButton(
+              child: Text('完成'),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.resolveWith((states) => (_ifFilled|| _filePath.isNotEmpty) ? iMomentsBlueButton : Colors.grey),
+                foregroundColor: MaterialStateProperty.resolveWith((states) => Colors.white),
+
+              ),
+              //color: (_ifFilled|| _filePath.isNotEmpty) ? iMomentsBlueButton : null ,
+              onPressed: () {
+                if(_ifFilled|| _filePath.isNotEmpty) {
+                  FocusScope.of(context).requestFocus(FocusNode());
+                  printResult();
+                }
+              },
+            ),
+          )
+        ],
       ),
-      body: Column(
+      body: ListView(
         children: <Widget>[
+          Container(
+            height: 200,
+            padding: EdgeInsets.fromLTRB(25, 10, 25, 10),
+            child: Form(
+              key: _formKey,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              child: TextFormField(
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: '在此处输入你的文字',
+                ),
+                autofocus: false,
+                maxLines: 7,
+                style: TextStyle(
+                  fontSize: 15,
+                ),
+                onChanged: (text) {
+                  words = text;
+                  if(text.isNotEmpty || _filePath.isNotEmpty) {
+                    setState(() {
+                      _ifFilled = true;
+                    });
+                  }
+                  else {
+                    setState(() {
+                      _ifFilled = false;
+                    });
+                  }
+                },
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) {
+                  if( !_ifFilled && _filePath.isEmpty) {
+                    return '请输入文字或上传图片';
+                  }
+                  else {
+                    return null;
+                  }
+                },
+              ),
+            ),
+          ),
+          Divider(
+            indent: 25,
+            endIndent: 25,
+            thickness: 1.5,
+          ),
           GridView.builder(
-            padding: EdgeInsets.all(5),
+            padding: EdgeInsets.fromLTRB(15, 4, 15, 4),
             physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
               itemCount: _filePath.length == 9? _filePath.length: 9,
@@ -108,14 +237,14 @@ class _PostPageState extends State<PostPage>
                               children: <Widget>[
                                 ButtonBar(
                                   children: <Widget>[
-                                    FlatButton(
+                                    TextButton(
                                         child: Text('是'),
                                         onPressed: () {
                                           deleteImage(position);
                                           Navigator.of(context).pop(1);
                                         }
                                         ),
-                                    FlatButton(
+                                    TextButton(
                                         child: Text('否'),
                                         onPressed: () {
                                           Navigator.of(context).pop(1);
@@ -134,17 +263,6 @@ class _PostPageState extends State<PostPage>
                   );
                 }
               }
-          ),
-          RaisedButton(
-            child: Text('测试数据接口'),
-            onPressed: () async {
-              var url = 'https://www.imoments.com.cn:8080/login';
-              var res = await http.post(url, body: '{"username":"123","password":"123456"}');
-
-              var json = jsonDecode(res.body);
-              print(json);
-              print(res.statusCode);
-            },
           ),
         ],
       ),
@@ -207,28 +325,6 @@ class _ShowImageState extends State<ShowImage> {
               ),
             ),
             GestureDetector(
-              onLongPress: () {
-                showModalBottomSheet(
-                    context: context,
-                    builder: (builder){
-                      return Container(
-                        color: Colors.transparent,
-                        height: 60,
-                        child: Column(
-                          children: <Widget>[
-                            FlatButton(
-                                onPressed: () {
-                                  //todo: 保存图片
-                                },
-                                child: Text('保存图片')
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-                );
-
-              },
               onTap: () {
                 Navigator.of(context).pop(this);
               },
@@ -238,4 +334,79 @@ class _ShowImageState extends State<ShowImage> {
       ),
     );
   }
+}
+
+//加载圈
+class ProgressDialog {
+  static bool _isShowing = false;
+
+  ///展示
+  static void showProgress(BuildContext context,
+      {Widget child = const CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(Colors.blue),)}) {
+    if(!_isShowing) {
+      _isShowing = true;
+      Navigator.push(
+        context,
+        _PopRoute(
+          child: _Progress(
+            child: child,
+          ),
+        ),
+      );
+    }
+  }
+
+  ///隐藏
+  static void dismiss(BuildContext context) {
+    if (_isShowing) {
+      Navigator.of(context).pop();
+      _isShowing = false;
+    }
+  }
+}
+
+///Widget
+class _Progress extends StatelessWidget {
+  final Widget child;
+
+  _Progress({
+    Key key,
+    @required this.child,
+  })  : assert(child != null),
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+        color: Colors.transparent,
+        child: Center(
+          child: child,
+        ));
+  }
+}
+
+///Route
+class _PopRoute extends PopupRoute {
+  final Duration _duration = Duration(milliseconds: 300);
+  Widget child;
+
+  _PopRoute({@required this.child});
+
+  @override
+  Color get barrierColor => null;
+
+  @override
+  bool get barrierDismissible => true;
+
+  @override
+  String get barrierLabel => null;
+
+  @override
+  Widget buildPage(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation) {
+    return child;
+  }
+
+  @override
+  Duration get transitionDuration => _duration;
 }

@@ -71,7 +71,7 @@ class GalleryPageState extends State<GalleryPage>
               number = ran.nextInt(1500);
               List<Image> _moreImages = List<Image>.generate(
                 50, (i) => Image.network(
-                'https://www.imoments.com.cn/resource/img/2/${number + 10 * i}.jpg',
+                'https://www.imoments.com.cn/resource/img/3/${number + 10 * i}.jpg',
                 fit: BoxFit.cover,
               ),
               );
@@ -83,7 +83,6 @@ class GalleryPageState extends State<GalleryPage>
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) {
-                    print('number: $number');print('index : $index');
                     return GalleryShowPage(index: number + 10 * (index % 50) ,);
                   },
                 ));

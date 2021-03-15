@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'pages/login.dart';
 import 'bottom_navigation.dart';
+import 'colors.dart';
 
-final ThemeData _appTheme = _buildAppTheme();
+final ThemeData _iMomentsTheme = _buildiMomentsTheme();
 
-ThemeData _buildAppTheme() {
+ThemeData _buildiMomentsTheme() {
   final ThemeData base = ThemeData.light();
   return base.copyWith(
-    inputDecorationTheme: InputDecorationTheme(
-      border: OutlineInputBorder(),
-    ),
+    accentColor: iMomentsBlueButton,
+    buttonColor: iMomentsBlueButton,
+    textSelectionColor: iMomentsBlueWord,
+    primaryColor: iMomentsBlueWord
   );
 }
 
@@ -26,7 +28,7 @@ class _ImAppState extends State<ImApp> {
       home: BottomNavigationWidget(),
       initialRoute: '/login',
       onGenerateRoute: _getRoute,
-      theme: _appTheme,
+      theme: _iMomentsTheme,
     );
   }
 }
