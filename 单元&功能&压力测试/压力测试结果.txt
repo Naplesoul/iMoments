@@ -1,0 +1,15 @@
+
+主服务器连续并行请求压力测试
+0.0228s/req
+
+AI运算节点连接延迟测试
+prose 0.00431s/conn
+poem 0.00440s/conn
+
+单节点单条生成时间
+prose 1.126s/req
+poem 1.246s/req
+
+单节点并发请求平均生成时间
+prose 2.508s/req
+poem 2.776s/req
